@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CalcPro Elite - Premium Mobile Calculator</title>
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <div class="desktop-bg"></div>
+
+  <!-- --- SMARTPHONE SHELL PREVIEW --- -->
+  <div class="phone-shell" id="app-shell">
+    
+    <!-- Notch / Dynamic Island -->
+    <div class="notch" id="dynamic-island"></div>
+
+    <!-- Live Status Bar -->
+    <div class="status-bar">
+      <span id="status-time">09:41</span>
+      <div class="status-icons">
+        <!-- Signal Strength -->
+        <svg viewBox="0 0 24 24"><path d="M2 22h20V2z" fill="currentColor"/></svg>
+        <!-- Wifi -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.58 16.14a6.5 6.5 0 0 1 6.84 0M12 20h.01"/></svg>
+        <!-- Battery -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="2" ry="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+      </div>
+    </div>
+
+    <!-- Main Active Workspace -->
+    <div class="app-container">
+      
+      <!-- --- SCREEN/PANEL CONTENT VIEWPORT --- -->
+      <div class="view-content">
+
+        <!-- --- 1. CALCULATOR SCREEN --- -->
+        <div class="view-panel active" id="view-calc">
+          <div class="panel-header">
+            <span class="panel-title">CalcPro <span class="badge-pro">Pro</span></span>
+            <div style="display: flex; gap: 8px;">
+              <button class="mode-btn" id="btn-camera" title="Camera Math Scan" style="color: inherit;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </button>
+              <button class="mode-btn" id="btn-voice" title="Voice Calculator" style="color: inherit;">
+                <svg viewBox="0 0 24 24" style="width:18px; height:18px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" fill="currentColor"/><path d="M19 10v2a7 7 0 0 1-14 0v-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="calc-container">
+            <!-- Tabs: Standard, AI solver -->
+            <div class="calc-tabs">
+              <button class="calc-tab-btn active" data-mode="standard">Standard</button>
+              <button class="calc-tab-btn" data-mode="solver">AI Solve</button>
+            </div>
+
+            <!-- Double Line Display -->
+            <div class="calc-display" id="calc-display-area">
+              <div class="display-expr" id="calc-expression"></div>
+              <div class="display-preview" id="calc-preview">0</div>
+            </div>
+
+            <!-- Main Layout (matching reference image UI/UX) -->
+            <div class="calc-layout" id="calc-keypad-panel">
+              
+              <!-- Left side (3 Columns of buttons) -->
+              <div class="keys-grid-left" id="calculator-number-keys">
+                <!-- Row 1 -->
+                <button class="calc-btn btn-action" data-val="C">C</button>
+                <button class="calc-btn btn-action" data-val="neg">+/-</button>
+                <button class="calc-btn btn-action" data-val="%">%</button>
+                
+                <!-- Row 2 -->
+                <button class="calc-btn" data-val="7">7</button>
+                <button class="calc-btn" data-val="8">8</button>
+                <button class="calc-btn" data-val="9">9</button>
+                
+                <!-- Row 3 -->
+                <button class="calc-btn" data-val="4">4</button>
+                <button class="calc-btn" data-val="5">5</button>
+                <button class="calc-btn" data-val="6">6</button>
+                
+                <!-- Row 4 -->
+                <button class="calc-btn" data-val="1">1</button>
+                <button class="calc-btn" data-val="2">2</button>
+                <button class="calc-btn" data-val="3">3</button>
+                
+                <!-- Row 5 -->
+                <button class="calc-btn" data-val=".">.</button>
+                <button class="calc-btn" data-val="0">0</button>
+                <button class="calc-btn" data-val="00">00</button>
+              </div>
+
+              <!-- Right side (Operator Pill + Equals Button) -->
+              <div class="keys-col-right">
+                <div class="operator-pill">
+                  <!-- scientific slide trigger caret -->
+                  <button class="pill-btn btn-toggle-sci" id="btn-sci-caret" title="Toggle Scientific">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px; transform: rotate(-90deg);"><polyline points="15 18 9 12 15 6"/></svg>
+                  </button>
+                  <button class="pill-btn" data-val="/">÷</button>
+                  <button class="pill-btn" data-val="*">×</button>
+                  <button class="pill-btn" data-val="-">−</button>
+                  <button class="pill-btn" data-val="+">+</button>
+                </div>
+                <button class="equals-btn" id="calc-solve-btn">=</button>
+              </div>
+
+              <!-- Sliding Scientific Drawer (overlays left numbers grid) -->
+              <div class="scientific-drawer" id="scientific-drawer">
+                <div class="drawer-header">
+                  <span>Scientific Panel</span>
+                  <button class="drawer-close" id="btn-close-sci">×</button>
+                </div>
+                <div class="scientific-drawer-grid">
+                  <button class="sci-drawer-btn" data-val="sin">sin</button>
+                  <button class="sci-drawer-btn" data-val="cos">cos</button>
+                  <button class="sci-drawer-btn" data-val="tan">tan</button>
+                  <button class="sci-drawer-btn" data-val="asin">asin</button>
+                  <button class="sci-drawer-btn" data-val="acos">acos</button>
+                  <button class="sci-drawer-btn" data-val="atan">atan</button>
+                  <button class="sci-drawer-btn" data-val="sinh">sinh</button>
+                  <button class="sci-drawer-btn" data-val="cosh">cosh</button>
+                  <button class="sci-drawer-btn" data-val="tanh">tanh</button>
+                  <button class="sci-drawer-btn" data-val="log">log</button>
+                  <button class="sci-drawer-btn" data-val="ln">ln</button>
+                  <button class="sci-drawer-btn" data-val="^">xʸ</button>
+                  <button class="sci-drawer-btn" data-val="π">π</button>
+                  <button class="sci-drawer-btn" data-val="e">e</button>
+                  <button class="sci-drawer-btn" data-val="!">x!</button>
+                  <button class="sci-drawer-btn" data-val="nCr">nCr</button>
+                  <button class="sci-drawer-btn" data-val="nPr">nPr</button>
+                  <button class="sci-drawer-btn" data-val="deg" id="btn-deg-toggle">rad</button>
+                  <button class="sci-drawer-btn" data-val="sqrt">√</button>
+                  <button class="sci-drawer-btn" data-val="^2">x²</button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- AI Equation Input -->
+            <div class="finance-form" id="ai-solve-input-panel" style="display:none; padding: 10px 0;">
+              <div class="finance-row">
+                <label class="finance-label">Enter Algebraic Equation</label>
+                <div class="finance-input-wrapper">
+                  <input type="text" class="finance-input" id="ai-equation-text" placeholder="e.g. 2x + 5 = 15 or x^2 - 5x + 6 = 0">
+                </div>
+              </div>
+              <button class="finance-button" id="btn-trigger-ai-solve">Solve Step-by-Step</button>
+              <div class="finance-results" style="margin-top: 10px;">
+                <div class="result-header">Supported Types</div>
+                <div class="result-row">
+                  <span>Linear Equations</span>
+                  <span class="result-val">ax + b = c</span>
+                </div>
+                <div class="result-row">
+                  <span>Quadratic Equations</span>
+                  <span class="result-val">ax² + bx + c = 0</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- --- 2. GRAPHING SCREEN --- -->
+        <div class="view-panel" id="view-graph">
+          <div class="panel-header">
+            <span class="panel-title">Graphing Suite</span>
+            <div style="display:flex; gap: 6px;">
+              <button class="graph-btn" id="btn-export-graph" title="Export PNG">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Function inputs -->
+          <div class="graph-controls">
+            <div class="graph-input-wrapper">
+              <div class="graph-input-row">
+                <div class="graph-fn-indicator" style="background:#007aff;"></div>
+                <span>y₁=</span>
+                <input type="text" class="graph-input" id="graph-fn-1" value="x^2">
+              </div>
+              <div class="graph-input-row">
+                <div class="graph-fn-indicator" style="background:#ff3b30;"></div>
+                <span>y₂=</span>
+                <input type="text" class="graph-input" id="graph-fn-2" placeholder="e.g. sin(x)" value="sin(x)">
+              </div>
+            </div>
+            <button class="finance-button" id="btn-plot-graph" style="margin: 0; padding: 10px 14px;">Plot</button>
+          </div>
+
+          <!-- SVG/Canvas Workspace -->
+          <div class="graph-canvas-container" id="canvas-container">
+            <canvas id="graph-canvas"></canvas>
+            <div class="graph-tooltip" id="graph-tooltip"></div>
+
+            <!-- Action Controls Overlay -->
+            <div class="graph-actions-overlay">
+              <button class="graph-overlay-btn" id="graph-zoom-in">+</button>
+              <button class="graph-overlay-btn" id="graph-zoom-out">−</button>
+              <button class="graph-overlay-btn" id="graph-reset-view" style="font-size:11px;">1:1</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- --- 3. FINANCE SCREEN --- -->
+        <div class="view-panel" id="view-finance">
+          <div class="panel-header">
+            <span class="panel-title">Financial Suite</span>
+          </div>
+
+          <!-- Calculator Mode Tabs -->
+          <div class="finance-tabs">
+            <button class="finance-tab-btn active" data-fin="emi">EMI (Loan)</button>
+            <button class="finance-tab-btn" data-fin="sip">SIP Fund</button>
+            <button class="finance-tab-btn" data-fin="interest">Interest</button>
+            <button class="finance-tab-btn" data-fin="gst">GST / Tax</button>
+            <button class="finance-tab-btn" data-fin="inflation">Inflation</button>
+            <button class="finance-tab-btn" data-fin="retirement">Retirement</button>
+          </div>
+
+          <div class="finance-form">
+            <div id="finance-inputs-container">
+              <!-- Dynamically rendered input items based on category -->
+            </div>
+            <button class="finance-button" id="btn-calc-finance">Calculate</button>
+
+            <!-- Results Summary Card -->
+            <div class="finance-results" id="finance-results-panel">
+              <div class="result-header" id="finance-result-title">Result</div>
+              <div id="finance-results-rows" style="display:flex; flex-direction:column; gap:8px;">
+                <!-- Result items -->
+              </div>
+              <div class="finance-chart-container" id="finance-chart">
+                <div class="chart-bar-col">
+                  <div class="chart-bar bar-principal" style="height: 50%;"></div>
+                  <span>Principal</span>
+                </div>
+                <div class="chart-bar-col">
+                  <div class="chart-bar bar-gain" style="height: 80%;"></div>
+                  <span>Gains / Interest</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- --- 4. UNIT CONVERTER SCREEN --- -->
+        <div class="view-panel" id="view-converter">
+          <div class="panel-header">
+            <span class="panel-title">Unit Converter</span>
+          </div>
+
+          <div class="converter-search">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="converter-search-input" placeholder="Search conversion categories...">
+          </div>
+
+          <!-- Horizontal categories -->
+          <div class="converter-categories" id="converter-cats-tabs">
+            <button class="conv-cat-btn active" data-cat="length">Length</button>
+            <button class="conv-cat-btn" data-cat="weight">Weight</button>
+            <button class="conv-cat-btn" data-cat="temperature">Temperature</button>
+            <button class="conv-cat-btn" data-cat="area">Area</button>
+            <button class="conv-cat-btn" data-cat="volume">Volume</button>
+            <button class="conv-cat-btn" data-cat="speed">Speed</button>
+            <button class="conv-cat-btn" data-cat="time">Time</button>
+            <button class="conv-cat-btn" data-cat="storage">Data Storage</button>
+          </div>
+
+          <div class="converter-grid" id="converter-grid-container">
+            <!-- Grid of unit cards -->
+          </div>
+        </div>
+
+        <!-- --- 5. PROFILE SCREEN (HISTORY & SETTINGS) --- -->
+        <div class="view-panel" id="view-profile">
+          <div class="panel-header">
+            <span class="panel-title">Profile & History</span>
+          </div>
+
+          <div class="profile-container">
+            <!-- User Status Card -->
+            <div class="profile-card">
+              <div class="profile-avatar">S</div>
+              <div class="profile-info">
+                <div class="profile-name">Elite User</div>
+                <div class="profile-sub">Standard Plan (Free Mode)</div>
+              </div>
+              <button class="profile-action-btn" id="btn-upgrade-pro">Go Pro</button>
+            </div>
+
+            <!-- Folders & History Sections -->
+            <div class="settings-group">
+              <span class="settings-title">Calculations History</span>
+              
+              <div class="history-view">
+                <div class="history-controls">
+                  <div class="history-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="history-search-input" placeholder="Search expressions...">
+                  </div>
+                  <button class="graph-btn" id="btn-new-folder" title="New Folder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                  </button>
+                </div>
+
+                <div class="history-folders-section" id="history-folders-chips">
+                  <!-- Folder tabs -->
+                  <div class="folder-chip active" data-folder="all">📁 All</div>
+                  <div class="folder-chip" data-folder="favorites">⭐ Favorites</div>
+                </div>
+
+                <!-- History list list -->
+                <div class="history-list" id="history-items-list">
+                  <div style="text-align:center; color:var(--color-text-secondary); padding: 20px; font-size:12px;">No calculations stored yet.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="settings-group">
+              <span class="settings-title">App Settings</span>
+              <div class="settings-list">
+                <div class="settings-item" id="settings-toggle-lock">
+                  <div class="settings-item-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span>Biometric Lock / Passcode</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="passcode-enable-toggle">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="settings-item" id="settings-cloud-sync">
+                  <div class="settings-item-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-.01M17 14h.01M13 18h.01M9 18h.01M5 14h.01M4 10h.01M12 6h.01"/><path d="M22 10a8 8 0 0 0-16 0M2 10a8 8 0 0 1 16 0"/></svg>
+                    <span>Cloud Database Sync</span>
+                  </div>
+                  <span style="font-size:12px; color:var(--color-text-secondary);" id="cloud-sync-status">Unsynced</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Premium Themes -->
+            <div class="settings-group">
+              <span class="settings-title">Select Premium Theme</span>
+              <div class="themes-grid">
+                <div class="theme-select-card" data-theme-name="dark">
+                  <div class="theme-swatch" style="background:#282828;"></div>
+                  <span>AMOLED Dark</span>
+                </div>
+                <div class="theme-select-card" data-theme-name="light">
+                  <div class="theme-swatch" style="background:#f3f4f6;"></div>
+                  <span>Clean Light</span>
+                </div>
+                <div class="theme-select-card" data-theme-name="midnight">
+                  <div class="theme-swatch" style="background:#2563eb;"></div>
+                  <span>Royal Blue</span>
+                </div>
+                <div class="theme-select-card" data-theme-name="emerald">
+                  <div class="theme-swatch" style="background:#0d9488;"></div>
+                  <span>Teal Green</span>
+                </div>
+                <div class="theme-select-card" data-theme-name="purple">
+                  <div class="theme-swatch" style="background:#be123c;"></div>
+                  <span>Crimson Red</span>
+                </div>
+                <div class="theme-select-card" data-theme-name="gold">
+                  <div class="theme-swatch" style="background:#eab308;"></div>
+                  <span>Mustard Gold</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- --- BOTTOM APP NAVIGATION BAR --- -->
+      <nav class="bottom-nav">
+        <button class="nav-item active" data-view="calc">
+          <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+          <span>Calculator</span>
+        </button>
+        <button class="nav-item" data-view="graph">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Graphing</span>
+        </button>
+        <button class="nav-item" data-view="finance">
+          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          <span>Finance</span>
+        </button>
+        <button class="nav-item" data-view="converter">
+          <svg viewBox="0 0 24 24"><path d="M17 2.1l4 4-4 4M3 17.9l-4-4 4-4M21 6.1H9M3 17.9h12"/></svg>
+          <span>Converter</span>
+        </button>
+        <button class="nav-item" data-view="profile">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+
+      <!-- Home Swipe Indicator -->
+      <div class="home-indicator"></div>
+
+    </div>
+
+    <!-- --- OVERLAY INTERACTIVE MODALS --- -->
+
+    <!-- Passcode Lock Screen Overlay -->
+    <div class="lock-screen" id="app-lock-screen">
+      <div class="lock-title">Enter Passcode</div>
+      <div class="lock-dots" id="lock-dots-container">
+        <div class="lock-dot"></div>
+        <div class="lock-dot"></div>
+        <div class="lock-dot"></div>
+        <div class="lock-dot"></div>
+      </div>
+      <div class="lock-keypad">
+        <button class="lock-key">1</button>
+        <button class="lock-key">2</button>
+        <button class="lock-key">3</button>
+        <button class="lock-key">4</button>
+        <button class="lock-key">5</button>
+        <button class="lock-key">6</button>
+        <button class="lock-key">7</button>
+        <button class="lock-key">8</button>
+        <button class="lock-key">9</button>
+        <button class="lock-key key-empty"></button>
+        <button class="lock-key">0</button>
+        <button class="lock-key key-text" id="lock-key-back">DELETE</button>
+      </div>
+    </div>
+
+    <!-- Camera OCR Scan Overlay Modal -->
+    <div class="modal-overlay" id="modal-camera">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <span class="modal-title">Camera Equation Scanner</span>
+          <button class="modal-close" data-close="camera">×</button>
+        </div>
+        <div class="camera-panel">
+          <div class="camera-viewport">
+            <video class="camera-video" id="camera-video-feed" autoplay playsinline></video>
+            <div class="camera-grid-overlay"></div>
+            <div class="camera-scanner-bar" id="camera-scanner-laser"></div>
+            <div class="camera-simulated-math" id="camera-sim-text">Hold equation steady inside frame...</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <span style="font-size:11px; color:var(--color-text-secondary);">Or upload image:</span>
+            <input type="file" id="camera-file-upload" accept="image/*" style="font-size:11px; max-width:180px;">
+          </div>
+          <button class="camera-trigger" id="camera-snap-btn" title="Capture & Solve"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Voice Input Solver Overlay Modal -->
+    <div class="modal-overlay" id="modal-voice">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <span class="modal-title">Voice Command Solving</span>
+          <button class="modal-close" data-close="voice">×</button>
+        </div>
+        <div class="voice-panel">
+          <div class="voice-pulse-ring">
+            <div class="voice-mic-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </div>
+          </div>
+          <div class="voice-status-text" id="voice-status">Listening... Speak equation</div>
+          <div class="voice-transcription" id="voice-result-transcript">"Calculate two hundred multiplied by fifteen"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Solver Step-by-Step Detail Modal -->
+    <div class="modal-overlay" id="modal-solver">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <span class="modal-title">AI Solver: Step-by-Step Solution</span>
+          <button class="modal-close" data-close="solver">×</button>
+        </div>
+        <div class="solver-panel">
+          <div style="font-size: 15px; font-weight:700; color:var(--color-accent);" id="solver-problem-title">Equation: 2x + 5 = 15</div>
+          <div class="solver-steps" id="solver-steps-list">
+            <!-- Simulated step details -->
+          </div>
+          <button class="finance-button" id="btn-solver-dismiss" style="margin-top: 10px;">Got it, Learn More</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Folder Modal Overlay -->
+    <div class="modal-overlay" id="modal-folders">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <span class="modal-title">Create History Folder</span>
+          <button class="modal-close" data-close="folders">×</button>
+        </div>
+        <div class="finance-form" style="padding: 10px 0;">
+          <div class="finance-row">
+            <label class="finance-label">Folder Name</label>
+            <input type="text" class="finance-input" id="folder-name-input" placeholder="e.g. Physics Homework, Tax 2026">
+          </div>
+          <button class="finance-button" id="btn-confirm-new-folder">Create Folder</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upgrade Pro Subscription Modal Overlay -->
+    <div class="modal-overlay" id="modal-pro">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <span class="modal-title">Go Pro</span>
+          <button class="modal-close" data-close="pro">×</button>
+        </div>
+        <div class="pro-upgrade-card">
+          <span class="pro-badge">CalcPro Elite</span>
+          <span class="pro-title">Unlock All Premium Features</span>
+          <div class="pro-features">
+            <div class="pro-feature-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>AI Mathematical Assistant & Solver</span>
+            </div>
+            <div class="pro-feature-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Full Graphing Toolkit & Coordinates Tracking</span>
+            </div>
+            <div class="pro-feature-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Advanced Financial Suite with Projection Charts</span>
+            </div>
+            <div class="pro-feature-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Unlimited History & Custom Folders</span>
+            </div>
+            <div class="pro-feature-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Biometric Passcode Screen Lock</span>
+            </div>
+            <div class="pro-feature-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Cloud Sync Database Backup</span>
+            </div>
+          </div>
+          <div class="pro-pricing">$4.99 / month or $39.99 / year</div>
+          <button class="pro-btn" id="btn-subscribe-pro">Activate Pro Subscription</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
